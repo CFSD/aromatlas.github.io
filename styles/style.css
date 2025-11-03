@@ -1,0 +1,936 @@
+/*
+  Feuille de style principale pour l’application Aromatlas.
+  Ce fichier définit une palette de couleurs inspirée d’iOS et
+  structure les différentes sections de la fiche de dégustation.
+  Les variables CSS permettent un ajustement facile des thèmes et
+  garantissent une cohérence visuelle globale. Pour la palette
+  Aromatlas et les infobulles, voir styles/atlas.css.
+*/
+
+:root {
+  /* Couleurs et surfaces de base
+     La palette est volontairement douce et lumineuse pour créer
+     une ambiance aérienne qui rappelle les interfaces Apple. */
+  --background: linear-gradient(180deg, #f6f9fc 0%, #eef4f9 100%);
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --text: #1c1c1e;
+  --muted: #6c6c70;
+  --accent: #007aff;
+  /* Arrondis généreux pour une sensation plus organique */
+  --radius: 20px;
+  /* Ombres douces pour un relief subtil */
+  --shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  --max-width: 960px;
+  /* Effets de verre (frosted glass) */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-blur: blur(16px);
+
+  /* Variables supplémentaires héritées pour la palette d’arômes.
+     Ces clés correspondent aux anciennes variables de atlas.css, que
+     nous redéfinissons ici pour harmoniser les couleurs. */
+  --card: var(--card-bg);
+  --ink: var(--text);
+  --line: rgba(0, 0, 0, 0.1);
+  /* accent1 était utilisé pour surligner les arômes sélectionnés.
+     Un jaune doux est conservé pour contraster avec l’accent bleu. */
+  --accent1: #f9b234;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: linear-gradient(180deg, #0d0d0d 0%, #121212 100%);
+    --card-bg: rgba(28, 28, 30, 0.7);
+    --text: #f2f2f2;
+    --muted: #8e8e93;
+    --accent: #0a84ff;
+    --shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  }
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* En-tête de l’application */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* Bar d'en-tête translucide avec effet frosted glass */
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  padding: 20px 32px;
+  border-radius: 0 0 var(--radius) var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  object-fit: contain;
+}
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.btn .icon {
+  font-size: 16px;
+}
+.btn.primary {
+  background: linear-gradient(90deg, var(--accent) 0%, #0057d4 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4);
+}
+.btn.primary:hover {
+  background: #004aad;
+}
+.btn.secondary {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--text);
+}
+.btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+.btn.small {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* Spécialisation pour le bouton d'ajout d'arômes */
+.aroma-controls .btn.small {
+  background: linear-gradient(90deg, var(--accent) 0%, #0057d4 100%);
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 14px;
+  padding: 8px 14px;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+}
+.aroma-controls .btn.small:hover {
+  background: #004aad;
+}
+
+/* Container principal */
+.app {
+  max-width: var(--max-width);
+  margin: 20px auto 60px;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Cartes */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icônes (emoji) dans les titres */
+.emoji {
+  margin-right: 4px;
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+/* Grilles et champs de formulaire */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+.info-grid {
+  margin-bottom: 8px;
+}
+
+.flags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  align-items: center;
+}
+.notes-block label {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.input,
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--text);
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+}
+.textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+/* style des commutateurs pour les options (brut de fût, etc.) */
+.checkbox-item {
+  position: relative;
+  display: block;
+  font-size: 14px;
+  color: var(--text);
+}
+.checkbox-item input {
+  display: none;
+}
+.checkbox-item label {
+  display: inline-block;
+  position: relative;
+  padding-left: 54px;
+  line-height: 24px;
+  cursor: pointer;
+}
+.checkbox-item label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: #e5e7eb;
+  transition: background 0.3s;
+}
+.checkbox-item label::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+}
+.checkbox-item input:checked + label::before {
+  background: var(--accent);
+}
+.checkbox-item input:checked + label::after {
+  transform: translate(20px, -50%);
+}
+
+/* Pastilles pour les arômes */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.chip {
+  background: linear-gradient(90deg, var(--accent) 0%, #0057d4 100%);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+/*
+  Code couleur pour chaque famille d’arômes dans l’interface. Les
+  classes fam-* sont ajoutées dynamiquement en fonction de la
+  famille du label (fruite, floral, herbace, cereale, queue,
+  tourbe, elevage). L’attribut !important permet de primer sur le
+  dégradé par défaut défini ci-dessus.
+*/
+.chip.fam-fruite  { background: #FFEECC !important; color: #C05621 !important; }
+.chip.fam-floral  { background: #FFEAF3 !important; color: #9D174D !important; }
+.chip.fam-herbace { background: #E6F4EA !important; color: #2F855A !important; }
+.chip.fam-cereale{ background: #F5EFE6 !important; color: #975A16 !important; }
+.chip.fam-queue  { background: #F3F4F6 !important; color: #4B5563 !important; }
+.chip.fam-tourbe { background: #ECEEF4 !important; color: #364F6B !important; }
+.chip.fam-elevage{ background: #FDF1D6 !important; color: #A27C29 !important; }
+
+/* Profil sensoriel */
+.sensor-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+}
+.metrics {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.metric-row label {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.range-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.range-wrap input[type="range"] {
+  flex: 1;
+}
+
+/* Style personnalisé pour les sliders (Chrome/Safari/Firefox) */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: #0057d4;
+}
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb;
+  outline: none;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+input[type="range"]:hover::-moz-range-thumb {
+  background: #0057d4;
+}
+.range-wrap output {
+  min-width: 28px;
+  text-align: right;
+  font-weight: 600;
+}
+.radar-wrapper {
+  flex: 0 0 300px;
+  max-width: 100%;
+}
+
+/* Notation */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.score-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.score-item label {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.score-item input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--text);
+  font-size: 15px;
+}
+.score-item input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+}
+.total-row {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.total-value {
+  background: var(--accent);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* Aperçu / impression */
+.preview-card {
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+.print-sheet {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 12px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sheet-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.sheet-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+.sheet-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text);
+}
+.checkbox-display {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--text);
+  border-radius: 2px;
+  margin-right: 4px;
+}
+.checkbox-display.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.sheet-notes {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--muted);
+}
+.sheet-scores {
+  font-size: 14px;
+}
+.score-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.aroma-sensor-print {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+.print-aromas {
+  flex: 1 1 200px;
+}
+.print-radar {
+  flex: 0 0 250px;
+  text-align: center;
+}
+.sheet-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+@media print {
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+  .app-header,
+  .btn {
+    display: none !important;
+  }
+  .app {
+    margin: 0;
+    padding: 0;
+  }
+  .card,
+  .preview-card {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+  .print-sheet {
+    border: none;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
+/* Styles pour le gabarit PDF caché */
+#pdfTemplate {
+  display: none;
+}
+/*
+  Styles dédiés au gabarit PDF (pdf-sheet) pour la génération du
+  document imprimé. La mise en page rappelle une fiche de
+  laboratoire : en‑tête, informations regroupées, zone de notes et
+  un corps principal en colonnes pour arômes, radar et notation.
+*/
+.pdf-sheet {
+  background: #ffffff;
+  color: var(--text);
+  /* Réduire légèrement la marge intérieure et supprimer la contrainte max-width
+     pour utiliser pleinement la largeur de la page A4 */
+  padding: 32px;
+  /* Pas d’arrondi pour un rendu plus sobre */
+  border-radius: 0;
+  /* Ajuster explicitement la largeur à 190 mm (210 mm moins deux marges de 10 mm) afin que
+     le contenu utilise toute la largeur disponible dans le PDF. Sans cette unité,
+     html2pdf centre l’élément et provoque un large blanc sur la gauche. */
+  width: 190mm;
+  max-width: none;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* Pas de bordure ni ombre pour un rendu sans contour */
+  border: none;
+  box-shadow: none;
+}
+
+/* En-tête de la fiche PDF */
+.pdf-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+.pdf-logo{
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  object-fit: contain;   /* l’icône garde ses proportions */
+  display: block;
+}
+.pdf-header-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pdf-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.pdf-subtitle {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+/* Section informations et drapeaux */
+.pdf-info-section {
+  margin-bottom: 20px;
+}
+.pdf-info {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.pdf-info th,
+.pdf-info td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.pdf-info th {
+  background: #f7f9fb;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+}
+.pdf-info td {
+  color: var(--text);
+}
+.pdf-flags {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+}
+.pdf-flags .flag {
+  background: #f0f4f8;
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Notes */
+.pdf-notes {
+  margin-bottom: 24px;
+}
+.pdf-notes h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.pdf-notes p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+  min-height: 60px;
+  background: #f9fbfd;
+}
+
+/* Corps principal en colonnes */
+/* Mise en page du corps principal du PDF */
+.pdf-main {
+  display: flex;
+  gap: 20px;
+}
+.pdf-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.pdf-right {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+}
+.pdf-left h2,
+.pdf-right h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Arômes */
+.pdf-aromas .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pdf-aromas .chip {
+  background: #f0f4f8;
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/*
+  Code couleur pour chaque famille d’arômes dans le PDF. Les
+  classes fam-* sont ajoutées aux pastilles lors du rendu.
+*/
+.pdf-aromas .chip.fam-fruite  { background: #FFEECC !important; color: #C05621 !important; }
+.pdf-aromas .chip.fam-floral  { background: #FFEAF3 !important; color: #9D174D !important; }
+.pdf-aromas .chip.fam-herbace { background: #E6F4EA !important; color: #2F855A !important; }
+.pdf-aromas .chip.fam-cereale{ background: #F5EFE6 !important; color: #975A16 !important; }
+.pdf-aromas .chip.fam-queue  { background: #F3F4F6 !important; color: #4B5563 !important; }
+.pdf-aromas .chip.fam-tourbe { background: #ECEEF4 !important; color: #364F6B !important; }
+.pdf-aromas .chip.fam-elevage{ background: #FDF1D6 !important; color: #A27C29 !important; }
+
+/* Radar */
+.pdf-radar img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px;
+  background: #ffffff;
+}
+
+/* Notation en deux colonnes */
+.pdf-right .pdf-total {
+  margin-top: 8px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  border-top: 1px solid #e5e7eb;
+  padding-top: 6px;
+}
+
+/* Sections de notation (Apparence, Nez, Palais, Finale) */
+.pdf-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pdf-section h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.pdf-section .pdf-desc {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--muted);
+}
+.pdf-section .criteria-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  padding: 4px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+.criteria-row span:first-child {
+  flex-basis: 70%;
+}
+.criteria-row span:last-child {
+  flex-basis: 25%;
+  text-align: right;
+}
+
+/* ===== Patch fort pour la grille Informations ===== */
+.form-grid.info-grid {
+  display: grid !important;
+  grid-auto-flow: row !important;
+  grid-template-columns: repeat(12, 1fr) !important;
+  gap: 14px 16px !important; /* lignes / colonnes */
+}
+
+/* Harmoniser label + input */
+.form-grid.info-grid > div > label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.form-grid.info-grid > div > .input{
+  height:44px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.9);
+}
+
+/* Positionnement selon l’ordre actuel des 8 champs dans ton HTML :
+   1 Date, 2 Nom, 3 Distillerie, 4 Embouteilleur, 5 Âge,
+   6 Millésime, 7 Couleur, 8 ABV (%) */
+.form-grid.info-grid > div:nth-child(1) { grid-column: span 2 !important; } /* Date */
+.form-grid.info-grid > div:nth-child(2) { grid-column: span 3 !important; } /* Nom */
+.form-grid.info-grid > div:nth-child(3) { grid-column: span 3 !important; } /* Distillerie */
+.form-grid.info-grid > div:nth-child(4) { grid-column: span 3 !important; } /* Embouteilleur */
+.form-grid.info-grid > div:nth-child(5) { grid-column: span 1 !important; } /* Âge */
+.form-grid.info-grid > div:nth-child(6) { grid-column: span 2 !important; } /* Millésime */
+.form-grid.info-grid > div:nth-child(7) { grid-column: span 3 !important; } /* Couleur */
+.form-grid.info-grid > div:nth-child(8) { grid-column: span 2 !important; } /* ABV (%) */
+
+/* Si les switches/notes sont DANS .info-grid, force pleine largeur */
+.form-grid.info-grid .flags-grid,
+.form-grid.info-grid .notes-block { grid-column: 1 / -1 !important; }
+
+/* Tablette = 2 colonnes */
+@media (max-width:1024px){
+  .form-grid.info-grid { grid-template-columns: repeat(8,1fr) !important; }
+  .form-grid.info-grid > div:nth-child(n){ grid-column: span 4 !important; }
+}
+
+/* Mobile = 1 colonne */
+@media (max-width:640px){
+  .form-grid.info-grid { grid-template-columns: repeat(6,1fr) !important; }
+  .form-grid.info-grid > div:nth-child(n){ grid-column: 1 / -1 !important; }
+}
+
+/* ===== Informations : 2 lignes de 4 champs alignées ===== */
+.form-grid.info-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px 20px !important;
+  align-items: start;
+}
+
+/* 1re rangée */
+.form-grid.info-grid > div:nth-child(1) { grid-column: 1; } /* Date */
+.form-grid.info-grid > div:nth-child(2) { grid-column: 2; } /* Nom */
+.form-grid.info-grid > div:nth-child(3) { grid-column: 3; } /* Distillerie */
+.form-grid.info-grid > div:nth-child(4) { grid-column: 4; } /* Embouteilleur */
+
+/* 2e rangée : forcer placement */
+.form-grid.info-grid > div:nth-child(5) { grid-column: 2; grid-row: 2; } /* Âge → à côté de Millésime */
+.form-grid.info-grid > div:nth-child(6) { grid-column: 1; grid-row: 2; } /* Millésime */
+.form-grid.info-grid > div:nth-child(7) { grid-column: 3; grid-row: 2; } /* Couleur */
+.form-grid.info-grid > div:nth-child(8) { grid-column: 4; grid-row: 2; } /* ABV */
+
+/* Inputs : taille uniforme et espacés */
+.form-grid.info-grid input,
+.form-grid.info-grid .input {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+}
+
+/* Lignes suivantes (switches, notes) = pleine largeur */
+.form-grid.info-grid .flags-grid,
+.form-grid.info-grid .notes-block {
+  grid-column: 1 / -1 !important;
+}
+
+/* Tablette : 2 colonnes */
+@media (max-width:1024px){
+  .form-grid.info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .form-grid.info-grid > div:nth-child(n){
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+}
+
+/* Mobile : 1 colonne */
+@media (max-width:640px){
+  .form-grid.info-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .form-grid.info-grid > div:nth-child(n){
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+}
+
+/* Resserre la rangée des switches */
+.flags-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(200px, 1fr)); /* largeur mini un peu plus serrée */
+  gap: 8px 1px; /* moins d’espace : vertical / horizontal */
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Les cases ne doivent pas déborder */
+.flags-grid > .checkbox-item {
+  min-width: 0;
+}
+
+/* Label bien aligné et non coupé */
+.flags-grid label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+/* Responsive tablette : 2 colonnes, avec même logique de spacing */
+@media (max-width: 1024px) {
+  .flags-grid {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 8px 16px;
+  }
+}
+
+/* Mobile : 1 colonne (empile proprement) */
+@media (max-width: 640px) {
+  .flags-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}

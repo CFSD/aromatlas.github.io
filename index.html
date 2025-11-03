@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aromatlas – Fiche de dégustation</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/atlas.css">
+  <link rel="stylesheet" href="styles/rating-flat.css">
+  <script src="scripts/rating-flat.js" defer></script>
+  <link rel="icon" type="image/png" href="img/ico.png">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <img src="img/ico.png" alt="Logo Aromatlas" class="logo">
+      <h1 class="title">Aromatlas</h1>
+    </div>
+    <div class="header-right">
+      <button id="exportPdf" class="btn primary"><span class="icon">🖨</span><span>Exporter PDF</span></button>
+      <button id="resetAll" class="btn secondary">Réinitialiser</button>
+    </div>
+  </header>
+
+  <main class="app">
+    <section class="card">
+      <h2><span class="emoji">ℹ️</span> Informations</h2>
+      <div class="form-grid info-grid">
+        <div>
+          <label for="fDate">Date</label>
+          <input id="fDate" type="date" class="input">
+          <script>
+            document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+          </script>
+        </div>
+        <div>
+          <label for="fName">Nom</label>
+          <input id="fName" type="text" class="input" placeholder="Connoisseurs Choice">
+        </div>
+        <div>
+          <label for="fDistillery">Distillerie</label>
+          <input id="fDistillery" type="text" class="input" placeholder="Balblair Distillery">
+        </div>
+        <div>
+          <label for="fBottler">Embouteilleur</label>
+          <input id="fBottler" type="text" class="input" placeholder="Gordon & MacPhail">
+        </div>
+        <div>
+          <label for="fAge">Âge</label>
+          <input id="fAge" type="text" class="input" placeholder="30 ans">
+        </div>
+        <div>
+          <label for="fVintage">Millésime</label>
+          <input id="fVintage" type="text" class="input" placeholder="1993">
+        </div>
+        <div>
+          <label for="fColor">Couleur</label>
+          <input id="fColor" type="text" class="input" placeholder="Sherry">
+        </div>
+        <div>
+          <label for="fAbv">ABV (%)</label>
+          <input id="fAbv" type="number" min="0" max="100" step="0.1" class="input" placeholder="54.2">
+        </div>
+      </div>
+      <div class="form-grid flags-grid">
+        <div class="checkbox-item">
+          <input id="fCask" type="checkbox"><label for="fCask">Brut de fût</label>
+        </div>
+        <div class="checkbox-item">
+          <input id="fSingle" type="checkbox"><label for="fSingle">Fût unique</label>
+        </div>
+        <div class="checkbox-item">
+          <input id="fNcf" type="checkbox"><label for="fNcf">Non filtré à froid</label>
+        </div>
+        <div class="checkbox-item">
+          <input id="fNoCol" type="checkbox"><label for="fNoCol">Non coloré</label>
+        </div>
+      </div>
+      <div class="notes-block">
+        <label for="fNotes">Notes (libres)</label>
+        <textarea id="fNotes" class="textarea" placeholder="Premières impressions, contexte…"></textarea>
+      </div>
+    </section>
+
+    <!-- Notation -->
+    <section class="card">
+      <h2><span class="emoji">📝</span> Notation</h2>
+      <div id="scoreControls" class="score-grid"></div>
+      <div class="total-row">
+        <span>Total :</span><span id="totalScore" class="total-value">0 / 100</span>
+      </div>
+    </section>    
+
+    <section class="card">
+      <h2><span class="emoji">📊</span> Profil sensoriel</h2>
+      <div class="sensor-grid">
+        <div id="metricControls" class="metrics"></div>
+        <div class="radar-wrapper">
+          <canvas id="radarChart" width="300" height="300" aria-label="Radar sensoriel" role="img"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="emoji">🍋</span> Arômes identifiés</h2>
+      <div class="aroma-controls">
+        <button id="openPalette" class="btn small">Ajouter des arômes</button>
+      </div>
+      <div id="selectedAromas" class="chips"></div>
+    </section>
+
+  </main>
+
+  <div id="paletteOverlay" class="overlay" aria-hidden="true">
+    <div class="palette" role="dialog" aria-labelledby="paletteTitle">
+      <div class="bar">
+        <input id="palSearch" type="text" placeholder="Rechercher un arôme…" aria-label="Rechercher un arôme">
+        <button id="palClose" class="btn small secondary" type="button" aria-label="Fermer la palette">✕</button>
+      </div>
+      <div id="palResults" class="results" role="listbox"></div>
+    </div>
+  </div>
+
+  <div id="tooltip" class="tip" role="tooltip" aria-hidden="true"></div>
+
+  <div id="pdfTemplate" aria-hidden="true">
+
+    <div class="pdf-sheet">
+      <header class="pdf-header">
+        <img src="img/ico.png" alt="Logo Aromatlas" class="pdf-logo">
+        <div class="pdf-header-text">
+          <h1 class="pdf-title">Fiche de dégustation</h1>
+          <p class="pdf-subtitle">
+            PDF généré par Aromatlas le 
+            <script>document.write(new Date().toLocaleDateString('fr-FR'));</script>
+          </p>
+        </div>
+      </header>
+      <section class="pdf-info-section">
+        <table class="pdf-info">
+          <tr><th>Date</th><td id="pdfDate"></td><th>Nom</th><td id="pdfName"></td></tr>
+          <tr><th>Distillerie</th><td id="pdfDistillery"></td><th>Embouteilleur</th><td id="pdfBottler"></td></tr>
+          <tr><th>Âge</th><td id="pdfAge"></td><th>Millésime</th><td id="pdfVintage"></td></tr>
+          <tr><th>Couleur</th><td id="pdfColor"></td><th>ABV (%)</th><td id="pdfAbv"></td></tr>
+        </table>
+        <div class="pdf-flags" id="pdfFlags"></div>
+      </section>
+      <section class="pdf-notes">
+        <h2>Notes</h2>
+        <p id="pdfNotes"></p>
+      </section>
+      <section class="pdf-main">
+        <div class="pdf-left">
+          <div class="pdf-radar">
+            <h2>Profil sensoriel</h2>
+            <img id="pdfRadar" alt="Profil sensoriel">
+          </div>
+          <div class="pdf-aromas">
+            <h2>Arômes</h2>
+            <div id="pdfAromas" class="chips"></div>
+          </div>
+        </div>
+        <div class="pdf-right">
+          <h2>Notation</h2>
+          <div id="pdfNoteSections" class="pdf-sections"></div>
+          <div class="pdf-total"><strong>Total :</strong> <span id="pdfTotal"></span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

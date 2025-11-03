@@ -1,0 +1,104 @@
+
+/* ================================================================
+   rating-flat — single pack
+   Goal: clean number field + '/max' suffix + blue meter at bottom
+         no spinner, no blue halo, tidy grid.
+   Load this AFTER your base style.css
+================================================================ */
+
+/* Remove native spinners globally in score zone */
+#scoreControls input[type="number"]::-webkit-outer-spin-button,
+#scoreControls input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+#scoreControls input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+/* Kill blue halo/outlines */
+#scoreControls input[type="number"]:focus,
+#scoreControls input[type="number"]:focus-visible,
+#scoreControls .score-flat:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Grid for the whole section (safe defaults) */
+#scoreControls {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px 24px;
+}
+#scoreControls .score-item {
+  grid-column: span 4;
+  display: grid;
+  grid-template-rows: auto auto;
+}
+@media (max-width: 992px) { #scoreControls .score-item { grid-column: span 6; } }
+@media (max-width: 560px) { #scoreControls .score-item { grid-column: span 12; } }
+
+/* Label above, bold */
+#scoreControls .score-item > label {
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px 2px;
+  line-height: 1.25;
+}
+
+/* The control wrapper */
+.score-flat {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: auto min-content;
+  align-items: center;
+  gap: 0px;
+  width: 40%;
+  padding: 10px 14px 16px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.9);
+}
+
+/* Number input itself */
+.score-flat__input {
+  border: 0;
+  background: transparent;
+  text-align: left;              /* number at left as per sketch */
+  padding: 0;
+  margin: 0;
+  height: 34px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.score-flat__input:focus { outline: none; box-shadow: none; }
+
+/* '/10' suffix */
+.score-flat__suffix {
+  font-size: 16px;
+  color: rgba(0,0,0,.38);
+  white-space: nowrap;
+}
+
+/* Meter at the very bottom */
+.score-flat__meter {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 8px;
+  height: 6px;
+  border-radius: 999px;
+  background: #e4ecff;          /* pale track */
+  overflow: hidden;
+}
+.score-flat__meter > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: #0a64ff;
+  border-radius: 999px;
+  transition: width .2s ease;
+}
+
+/* Compact sizes per max */
+.score-flat[data-max="5"]   .score-flat__input { width: 5ch; }
+.score-flat[data-max="10"]  .score-flat__input { width: 6ch; }
+.score-flat[data-max="15"]  .score-flat__input { width: 7ch; }
+.score-flat[data-max="20"]  .score-flat__input { width: 7.5ch; }

@@ -1,0 +1,191 @@
+/*
+  Feuille de style héritée de l’ancienne version pour la palette Aromatlas
+  et son infobulle. Les règles sont préfixées avec des sélecteurs
+  spécifiques (.overlay, .palette, .tip) afin de ne pas polluer le
+  reste de l’application. Ce fichier est une copie de l’ancien atlas.css
+  déplacé dans le dossier styles afin de corriger le chemin brisé de
+  l’ancienne implémentation.
+*/
+
+/* Styles for the Aromatlas overlay and tooltip. These classes are
+   intentionally scoped to the palette and tooltip so they do not
+   conflict with the rest of the application. The palette is a
+   modal dialog for selecting aromas; the tooltip displays
+   additional information about each aroma. This CSS uses the
+   same custom properties defined in index.html (such as
+   --bg, --ink, --muted, --card, --line, --accent1) to inherit
+   theming from the main page. */
+
+.overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  overflow-y: auto;
+}
+.overlay[aria-hidden="false"] {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Alternative activation via classe .open (complément à aria-hidden) */
+.overlay.open {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Palette container */
+.palette {
+  background: var(--glass-bg);
+  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  width: min(90%, 600px);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* Bar with search and close */
+.palette .bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.palette .bar input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.75);
+  color: inherit;
+}
+.palette .bar input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+}
+
+/* Results list */
+.results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+.results .row {
+  display: flex;
+  position: relative;
+  /* padding-right: 24px;  petit espace pour le point */
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* 1) Ne plus teinter la ligne en bleu quand c’est sélectionné */
+.results .row[aria-selected="true"] {
+  background: transparent;
+  color: inherit; /* garder les couleurs normales */
+}
+/* 2) Ajouter un point gris discret à droite pour l’état sélectionné */
+.results .row[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);       /* s’adapte au thème clair/sombre */
+  opacity: 0.7;                   /* discret */
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+/* 3) (Optionnel) Neutraliser l’inversion de la pastille label quand sélectionné */
+.results .row[aria-selected="true"] .leaf-badge {
+  background: inherit;  /* laisse les couleurs de famille s’exprimer */
+  color: inherit;
+}
+.results .row:hover {
+  background: rgba(0, 122, 255, 0.1);
+}
+
+/* Label badge */
+.leaf-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--accent1);
+  color: #111;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/*
+  Code couleur pour les badges d’arômes dans la palette. Les
+  classes fam-* sont ajoutées par le script en fonction de la
+  famille du label. Elles reprennent la palette définie pour les
+  pastilles sur l’interface et le PDF.
+*/
+.leaf-badge.fam-fruite  { background: #FFEECC !important; color: #C05621 !important; }
+.leaf-badge.fam-floral  { background: #FFEAF3 !important; color: #9D174D !important; }
+.leaf-badge.fam-herbace { background: #E6F4EA !important; color: #2F855A !important; }
+.leaf-badge.fam-cereale{ background: #F5EFE6 !important; color: #975A16 !important; }
+.leaf-badge.fam-queue  { background: #F3F4F6 !important; color: #4B5563 !important; }
+.leaf-badge.fam-tourbe { background: #ECEEF4 !important; color: #364F6B !important; }
+.leaf-badge.fam-elevage{ background: #FDF1D6 !important; color: #A27C29 !important; }
+.results .row[aria-selected="true"] .leaf-badge {
+  background: #ffffff;
+  color: var(--accent);
+}
+
+/* Path text */
+.path {
+  font-size: 0.85rem;
+  color: var(--muted, #60636b);
+}
+
+/* Tooltip */
+.tip {
+  position: fixed;
+  z-index: 1100;
+  max-width: 280px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 0.85rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+  display: none;
+}
+.tip h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+.tip h4 small {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: var(--muted, #60636b);
+}
+.tip .line {
+  display: flex;
+  margin-bottom: 4px;
+}
+.tip .line .k {
+  flex: 0 0 80px;
+  font-weight: bold;
+}
+.tip .line .v {
+  flex: 1;
+}
